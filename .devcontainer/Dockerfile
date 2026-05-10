@@ -1,0 +1,16 @@
+FROM debian:bookworm-slim
+
+COPY install.sh /app/install.sh
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash git curl wget unzip tzdata openssl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN chmod +x /app/install.sh && /app/install.sh
+COPY config.json /etc/config.json
+
+# دستور چاپ لینک اختصاصی برای کلاینت شما
+RUN echo 'echo -e "\n🚀 GHTUN UPDATE FOR WARZONE:\nvless://6ddb2bc9-bd63-4484-8d4c-ecb77cfe1a3d@${CODESPACE_NAME}-443.app.github.dev:443?encryption=none&security=tls&type=ws&sni=${CODESPACE_NAME}-443.app.github.dev&path=%2Flive-chat#ghtun-ws"' >> /etc/bash.bashrc
+
+CMD ["/usr/local/bin/xray", "-c", "/etc/config.json"]
